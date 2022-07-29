@@ -158,7 +158,12 @@ End Sub
 
 Public Sub Connection()
 
-    On Error GoTo Connection_Error    
+    On Error GoTo Connection_Error
+    ' Case for object nothing error
+    If tADO.Connection Is Nothing Or tADO.Recordset Is Nothing Then
+        Call Class_Initialize
+    End If
+    
     ' HDR=Yes; indicates that the first row contains columnnames, not data.
     ' HDR=No; indicates the opposite.
     ' The state is enabled by default
