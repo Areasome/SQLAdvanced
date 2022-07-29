@@ -1,2 +1,2 @@
-# SQLAdvanced
- SQL class for VBA
+# VBA Snippet
+Code snippet for VBA
