@@ -2,13 +2,13 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "SQLAdvanced"
+Attribute VB_Name = "SQLPlus"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 ' ----------------------------------------------------------------
-' Procedure Name: SQLAdvanced
+' Procedure Name: SQLPlus
 ' Purpose: Query data with sql
 ' Procedure Kind: Class
 ' Procedure Access: Public
@@ -158,12 +158,7 @@ End Sub
 
 Public Sub Connection()
 
-    On Error GoTo Connection_Error
-    ' Case for object nothing error
-    If tADO.Connection Is Nothing Or tADO.Recordset Is Nothing Then
-        Call Class_Initialize
-    End If
-    
+    On Error GoTo Connection_Error    
     ' HDR=Yes; indicates that the first row contains columnnames, not data.
     ' HDR=No; indicates the opposite.
     ' The state is enabled by default
