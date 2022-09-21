@@ -1,0 +1,13 @@
+Sub test()
+    
+    Dim bar As New ProgressBar
+    bar.BarSetting "test title", "test status", 1, 5000
+    bar.Show 0
+    
+    For i = 1 To 5000
+        bar.SetStatus "test case name" & i
+        bar.SetValue i
+        If bar.IsCancelPressed Then Exit For
+    Next
+    
+End Sub

@@ -1,10 +1,10 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} ProgressBar 
    Caption         =   "Progress"
-   ClientHeight    =   2145
+   ClientHeight    =   2250
    ClientLeft      =   120
    ClientTop       =   465
-   ClientWidth     =   6780
+   ClientWidth     =   6405
    OleObjectBlob   =   "ProgressBar.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
@@ -143,5 +143,15 @@ Private Sub btnCancle_Click()
     ' Recalls that cancel was pressed so that they calling routine can be notified next time it asks.
     tBar.Cancelled = True
     Me.lbStatus.Caption = "Cancelled by user, please wait."
+    'Unload ProgressBar
     
+End Sub
+
+Private Sub Userform_QueryClose(Cancel As Integer, CloseMode As Integer)
+
+    If CloseMode = vbFormControlMenu Then
+        Unload ProgressBar
+        Exit Sub
+    End If
+
 End Sub
