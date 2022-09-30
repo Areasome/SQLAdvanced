@@ -24,6 +24,7 @@ Private Type SQLConnectionStrings
     HDR As Byte
     IMEX As Byte
     FMT As String
+    CharacterSet As String
     ConnectionString As String
 End Type
 
@@ -81,6 +82,12 @@ End Property
 Public Property Let FMT(ByVal strNewValue As String)
 
     tSQLConns.FMT = strNewValue
+    
+End Property
+
+Public Property Let CharacterSet(ByVal strNewValue As String)
+
+    tSQLConns.CharacterSet = strNewValue
     
 End Property
 
@@ -158,7 +165,7 @@ End Sub
 
 Public Sub Connection()
 
-    On Error GoTo Connection_Error    
+    On Error GoTo Connection_Error
     ' HDR=Yes; indicates that the first row contains columnnames, not data.
     ' HDR=No; indicates the opposite.
     ' The state is enabled by default
@@ -189,6 +196,12 @@ Public Sub Connection()
         strFMT = "FMT=Delimited(" & tSQLConns.FMT & ");"
     End If
     
+    '============================================================
+    Dim strCharacterSet As String
+    If tSQLConns.CharacterSet <> "" Then
+        strCharacterSet = "CharacterSet=" & tSQLConns.CharacterSet & ";"
+    End If
+    
     Select Case Application.Version * 1
         Case Is <= 11
             tSQLConns.Provider = "Provider=Microsoft.JET.OLEDB.4.0;"
@@ -203,28 +216,36 @@ Public Sub Connection()
                                          "Data Source=" & tSQLConns.DataSource & ";" & _
                                          tSQLConns.Extended & _
                                          strHDR & _
-                                         strIMEX & """"
+                                         strIMEX & _
+                                         strFMT & _
+                                         strCharacterSet & """"
         Case Is = "xlsx"
             tSQLConns.Extended = "Extended Properties=""Excel 12.0 Xml;"
             tSQLConns.ConnectionString = tSQLConns.Provider & _
                                          "Data Source=" & tSQLConns.DataSource & ";" & _
                                          tSQLConns.Extended & _
                                          strHDR & _
-                                         strIMEX & """"
+                                         strIMEX & _
+                                         strFMT & _
+                                         strCharacterSet & """"
         Case Is = "xlsb"
             tSQLConns.Extended = "Extended Properties=""Excel 12.0;"
             tSQLConns.ConnectionString = tSQLConns.Provider & _
                                          "Data Source=" & tSQLConns.DataSource & ";" & _
                                          tSQLConns.Extended & _
                                          strHDR & _
-                                         strIMEX & """"
+                                         strIMEX & _
+                                         strFMT & _
+                                         strCharacterSet & """"
         Case Is = "xlsm"
             tSQLConns.Extended = "Extended Properties=""Excel 12.0 Macro;"
             tSQLConns.ConnectionString = tSQLConns.Provider & _
                                          "Data Source=" & tSQLConns.DataSource & ";" & _
                                          tSQLConns.Extended & _
                                          strHDR & _
-                                         strIMEX & """"
+                                         strIMEX & _
+                                         strFMT & _
+                                         strCharacterSet & """"
         Case Is = "csv"
             tSQLConns.Extended = "Extended Properties=""text;"
             tSQLConns.ConnectionString = tSQLConns.Provider & _
@@ -232,7 +253,8 @@ Public Sub Connection()
                                          tSQLConns.Extended & _
                                          strHDR & _
                                          strIMEX & _
-                                         strFMT & """"
+                                         strFMT & _
+                                         strCharacterSet & """"
         Case Is = "txt"
             tSQLConns.Extended = "Extended Properties=""Text;"
             tSQLConns.ConnectionString = tSQLConns.Provider & _
@@ -240,7 +262,8 @@ Public Sub Connection()
                                          tSQLConns.Extended & _
                                          strHDR & _
                                          strIMEX & _
-                                         strFMT & """"
+                                         strFMT & _
+                                         strCharacterSet & """"
     End Select
     Debug.Print CStr(Now()) & " ADODB Connection string: " & Chr(10) & tSQLConns.ConnectionString
     
