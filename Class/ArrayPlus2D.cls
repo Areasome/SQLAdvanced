@@ -712,29 +712,29 @@ End Function
 '
 'End Sub
 
-Public Sub Reverse()
-    
-    ' Reverses the array.
-    ' If you want the array in descending order then sort and reverse.
-    Dim lRow As Long: lRow = RowEnd
-    Dim lColumns As Long: lColumns = ColumnEnd
-    
-    Dim result As Variant
-    ReDim result(1 To lRow, 1 To lColumns)
-    
-    Dim i  As Long, y As Long
-    Dim index As Long: index = 1
-    
-    For i = index To 1 Step -1
-        For y = 1 To lColumns
-            Reset(index, y) = m_Data(i, y)
-        Next
-        index = index + 1
-    Next
-    
-    m_Data = result
-    
-End Sub
+'Public Sub Reverse()
+'
+'    ' Reverses the array.
+'    ' If you want the array in descending order then sort and reverse.
+'    Dim lRow As Long: lRow = RowEnd
+'    Dim lColumns As Long: lColumns = ColumnEnd
+'
+'    Dim result As Variant
+'    ReDim result(1 To lRow, 1 To lColumns)
+'
+'    Dim i  As Long, y As Long
+'    Dim index As Long: index = 1
+'
+'    For i = index To 1 Step -1
+'        For y = 1 To lColumns
+'            result(index, y) = m_Data(i, y)
+'        Next
+'        index = index + 1
+'    Next
+'
+'    m_Data = result
+'
+'End Sub
 
 Public Function IsArraySet() As Boolean
     
