@@ -1,0 +1,1165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeTemplates>
+  <CodeTemplate>
+    <Description>Version</Description>
+    <Text>Version:
+
+2022-6-23 11:21:28
+- Create Draft Version
+
+2022-6-30 10:36:51
+- Add new new function
+
+2022-7-1 15:40:27
+- 新增一些方法
+- 修改SQL相关代码</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>Other</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>F_执行SQL查询_SQL Query To Array</Description>
+    <Text>Function SQLQueryToArray(ByVal FilePath As String, ByVal SQLText As String) As Variant
+
+    On Error GoTo SQLQuery_Error
+    Dim conn As Object: Set conn = CreateObject("ADODB.Connection")
+
+    Select Case Application.Version * 1
+        Case Is &lt;= 11
+            conn.Open = "Provider=Microsoft.JET.OLEDB.4.0;" _
+                      &amp; "Extended Properties=Excel 8.0;" _
+                      &amp; "Data Source=" &amp; FilePath
+        Case Is &gt;= 12
+            conn.Open = "Provider=Microsoft.ACE.OLEDB.12.0;" _
+                      &amp; "Data Source=" &amp; FilePath &amp; ";" _
+                      &amp; "Extended Properties=""Excel 12.0 Xml;" _
+                      &amp; "HDR=YES"";"
+    End Select
+
+    ' Error for conn failed
+    If conn.State &lt;&gt; 1 Then GoTo SQLQuery_Error
+    
+    Dim rs As Object: Set rs = CreateObject("ADODB.Recordset")
+    Set rs = conn.Execute(SQLText)          ' Run the SQL query
+    SQLQueryToArray = rs.GetRows            ' Return query result to array
+    
+    conn.Close
+    Set conn = Nothing: Set rs = Nothing
+    On Error GoTo 0
+    Exit Function
+
+SQLQuery_Error:
+    MsgBox "Error " &amp; Err.Number &amp; " (" &amp; Err.Description &amp; ") in procedure SQLQuery, line " &amp; Erl &amp; "."
+    
+End Function</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>SQL</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>从工作表中提取重复值 - </Description>
+    <Text>"SELECT DISTINCT [$U[str:返回字段]] FROM [$U[str:工作表名]$$U[str:单元格范围]] WHERE [$U[str:筛选字段名称]] = '$U[str:筛选字段]'"
+
+</Text>
+    <Author>Areasome</Author>
+    <Comment>SELECT DISTINCT 语句用于返回唯一不同的值</Comment>
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>SQL</Category>
+    <Language>128</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>从工作表中筛选数据 - Query Data In Excel Sheet</Description>
+    <Text>"SELECT [$U[str:返回字段名称]] " &amp; _
+"FROM [$U[str:工作表名]$$U[str:单元格范围]] " &amp; _
+"WHERE [$U[str:筛选字段名称]] = '$U[str:筛选字段值]'"</Text>
+    <Author>Areasome</Author>
+    <Comment>SELECT 语句用于从数据库中选取数据
+"SELECT * FROM [Sheet1$A1:D50]"
+"SELECT [T1] FROM [Sheet1$A1:D50] WHERE [T2] = 'Value'"
+"SELECT [T1],[T2] FROM [Sheet1$A1:D50] WHERE [T2] = 'Value'"
+</Comment>
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>SQL</Category>
+    <Language>128</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>分类汇总</Description>
+    <Text>"SELECT COUNT(*),column_name FROM data_source GROUP BY column_name HAVING COUNT(*) &gt;= 1"</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>SQL</Category>
+    <Language>128</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>强制声明变量 - Option Explicit</Description>
+    <Text>Option Explicit</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\Excel程序</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>添加延迟(Sleep)- Delay</Description>
+    <Text>Sleep $U[毫秒]</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\Excel程序</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>添加延迟(Wait) - Delay</Description>
+    <Text>Application.Wait Now + TimeValue("00:00:0$U[秒数]")
+
+</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\Excel程序</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>禁止屏幕刷新 - Application.ScreenUpdatin</Description>
+    <Text>Application.ScreenUpdating = False
+</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\Excel程序</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>禁止显示提示和警告消息 - Application.DisplayAlerts</Description>
+    <Text>Application.DisplayAlerts = False
+</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\Excel程序</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>禁止触发对象的事件 - Application.EnableEvents</Description>
+    <Text>Application.EnableEvents = False
+</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\Excel程序</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>覆盖默认基数数组下标值0 - Option Base</Description>
+    <Text>Option Base 1</Text>
+    <Author>Areasome</Author>
+    <Comment>此示例使用 Option Base 语句覆盖默认基数数组下标值 0。 LBound 函数返回数组的指定维度的可用最小下标。 Option Base 语句只在模块级别使用。</Comment>
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\Excel程序</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>F_判断SAP是否登录 - Is SAP Connection</Description>
+    <Text>Function IsSapConnection() As Boolean
+
+    On Error GoTo CatchError
+
+    '获取所有进程,查看SAPlogon进程是否存在
+    Dim obj As Object
+    Dim objs As Object
+    Dim process_flg As Boolean
+    
+    Set objs = GetObject("winMgmts:").instancesOf("Win32_Process")
+    For Each obj In objs
+        If obj.Description = "saplogon.exe" Then
+            process_flg = True
+            Exit For
+        End If
+    Next
+    
+    '不存在则弹窗报错并跳出方法
+    If Not process_flg Then
+        IsSapConnection = False
+        MsgBox "请开启并登入SAP后再运行程序!", vbCritical, "Error message"
+        Exit Function
+    End If
+    
+    '获取SAP_session,并判断是否已经登录
+    Dim App As Object
+    Dim sapGuiAuto As Object
+    
+    If App Is Nothing Then
+        Set sapGuiAuto = GetObject("SAPGUI")
+        Set App = sapGuiAuto.GetScriptingEngine
+    End If
+    
+    '无登录则弹窗报错并跳出方法
+    If App.Children.Count = 0 Then
+        IsSapConnection = False
+        MsgBox "请开启并登入SAP后再运行程序!", vbCritical, "Error message"
+        Exit Function
+    End If
+    
+    IsSapConnection = True
+
+ExitFunction:
+    Exit Function
+    
+CatchError:
+    'error handling
+    MsgBox "应用程序发生未知错误，请检查并开启登入SAP后再尝试运行程序!", vbCritical, "Error message"
+    GoTo ExitFunction
+    
+End Function</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\SAP相关</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>F_获取SAP Session - Get SAP Session</Description>
+    <Text>Function GetSapSession() As Object
+
+    On Error GoTo CatchError
+    
+    '获取SAP窗体对象
+    Dim sapGuiAuto As Object
+    Dim App As Object
+    Dim connection As Object
+    Dim session As Object
+    
+    Set sapGuiAuto = GetObject("SAPGUI")
+    Set App = sapGuiAuto.GetScriptingEngine
+    Set connection = App.Children(0)
+    Set session = connection.Children(0)
+    
+    'returen session
+    Set GetSapSession = session
+    
+ExitFunction:
+    Exit Function
+    
+CatchError:
+    'error handling
+    MsgBox "获取SAP窗体对象失败，请检查并开启登入SAP后再尝试运行程序!", vbCritical, "Error message"
+    GoTo ExitFunction
+    
+End Function</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\SAP相关</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>S_浏览器打开网址 - Open a URL in Broswer</Description>
+    <Text>' Usage: Call OpenURL("https://www.google.ca", InternetExplorer) 
+Enum BrowserName
+    ' This Enum is part of Sub OpenURL()
+    ' *** If changes are made here, update GetBrowserNameEnumValue()
+    IExplore = 1
+    FireFox = 2
+    Chrome = 3
+    Opera = 4
+    MSEdge = 5
+    Brave = 6
+End Enum
+
+Sub OpenURL(ByVal sURL As String, Optional lBrowser As BrowserName)
+    Dim oShell As Object
+    Dim sFFExe As String             ' Executable path/filename
+    Dim sProgName As String          ' Name of the Executable program
+    Dim sExe As String               ' Excutable exe filename
+    Dim sCmdLineSwitch As String     ' Command line switch
+    Dim sShellCmd As String          ' Shell Command
+ 
+    On Error GoTo Error_Handler
+ 
+    ' If no browser is specified then use the system's default one
+    If lBrowser = 0 Then
+        lBrowser = GetBrowserNameEnumValue(GetDefaultBrowser())
+    End If
+ 
+    ' Determine the Path to executable
+    Select Case lBrowser
+        Case 1
+            ' https://msdn.microsoft.com/en-us/library/hh826025(v=vs.85).aspx
+            sProgName = "Internet Explorer"
+            sExe = "IEXPLORE.EXE"
+            sCmdLineSwitch = " "
+        Case 2
+            ' https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options#Browser
+            sProgName = "Mozilla Firefox"
+            sExe = "Firefox.EXE"
+            sCmdLineSwitch = " -new-tab "
+        Case 3
+            sProgName = "Google Chrome"
+            sExe = "Chrome.exe"
+            sCmdLineSwitch = " -tab "
+        Case 4
+            ' http://www.opera.com/docs/switches/
+            sProgName = "Opera"
+            sExe = "opera.exe"
+            sCmdLineSwitch = " "
+        Case 5
+            sProgName = "Microsoft Edge"
+            sExe = "Chrome.exe"
+            sCmdLineSwitch = " -tab "
+        Case 6
+            sProgName = "Brave"
+            sExe = "brave.exe"
+            sCmdLineSwitch = " -tab "
+    End Select
+ 
+    If lBrowser = 5 Then    ' Special case for Edge!  Thank you Microsoft for not following the rules!
+        ' Build the command
+        sShellCmd = "cmd /c """ &amp; "start microsoft-edge:" &amp; sURL &amp; """"
+    Else
+        Set oShell = CreateObject("WScript.Shell")
+        sFFExe = oShell.RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\" &amp; _
+            "CurrentVersion\App Paths\" &amp; sExe &amp; "\")
+        ' Parse the returned string
+        sFFExe = Replace(sFFExe, Chr(34), "")    ' Special case for Opera?!
+        ' Build the command
+        sShellCmd = """" &amp; sFFExe &amp; """" &amp; "" &amp; sCmdLineSwitch &amp; """" &amp; sURL &amp; """"
+    End If
+    ' Open the URL
+    Shell sShellCmd, vbHide
+ 
+Error_Handler_Exit:
+    On Error Resume Next
+    If Not oShell Is Nothing Then Set oShell = Nothing
+    Exit Sub
+ 
+Error_Handler:
+    If Err.Number = -2147024894 Then
+        MsgBox sProgName &amp; " does not appear to be installed on this compter", _
+            vbInformation Or vbOKOnly, "Unable to open the requested URL"
+    Else
+        MsgBox "The following error has occurred" &amp; vbCrLf &amp; vbCrLf &amp; _
+            "Error Number: " &amp; Err.Number &amp; vbCrLf &amp; _
+            "Error Source: OpenURL" &amp; vbCrLf &amp; _
+            "Error Description: " &amp; Err.Description &amp; _
+            Switch(Erl = 0, "", Erl &lt;&gt; 0, vbCrLf &amp; "Line No: " &amp; Erl) _
+            , vbOKOnly + vbCritical, "An Error has Occurred!"
+    End If
+    Resume Error_Handler_Exit
+End Sub
+ 
+Function GetDefaultBrowser() As String
+    
+    Dim oShell As Object
+    Dim sProgId As String
+    Dim sCommand As String
+    Dim aCommand As Variant
+    On Error GoTo Error_Handler
+ 
+    Set oShell = CreateObject("WScript.Shell")
+    ' Default ProgId
+    sProgId = oShell.RegRead("HKEY_CURRENT_USER\Software\Microsoft\Windows\Shell\Associations" &amp; _
+        "\UrlAssociations\https\UserChoice\ProgId")
+    ' Cross-reference the sProgId to get the exe associated with it
+    sCommand = oShell.RegRead("HKEY_CLASSES_ROOT\" &amp; sProgId &amp; "\shell\open\command\")
+    ' Parse the returned value to extract just the exe filename
+    aCommand = Split(sCommand, Chr(34))
+    GetDefaultBrowser = Right(aCommand(1), Len(aCommand(1)) - InStrRev(aCommand(1), "\"))    ' firefox.exe
+    GetDefaultBrowser = Left(GetDefaultBrowser, InStr(GetDefaultBrowser, ".") - 1)    ' firefox
+ 
+Error_Handler_Exit:
+    On Error Resume Next
+    If Not oShell Is Nothing Then Set oShell = Nothing
+    Exit Function
+ 
+Error_Handler:
+    MsgBox "The following error has occurred" &amp; vbCrLf &amp; vbCrLf &amp; _
+        "Error Number: " &amp; Err.Number &amp; vbCrLf &amp; _
+        "Error Source: GetDefaultBrowser" &amp; vbCrLf &amp; _
+        "Error Description: " &amp; Err.Description &amp; _
+        Switch(Erl = 0, "", Erl &lt;&gt; 0, vbCrLf &amp; "Line No: " &amp; Erl) _
+        , vbOKOnly + vbCritical, "An Error has Occurred!"
+    Resume Error_Handler_Exit
+End Function
+
+Function GetBrowserNameEnumValue(sInput As String) As Long
+    On Error GoTo Error_Handler
+ 
+    Select Case sInput
+        Case "iexplore"
+            GetBrowserNameEnumValue = BrowserName.IExplore
+        Case "firefox"
+            GetBrowserNameEnumValue = BrowserName.FireFox
+        Case "chrome"
+            GetBrowserNameEnumValue = BrowserName.Chrome
+        Case "opera"
+            GetBrowserNameEnumValue = BrowserName.Opera
+        Case "msedge"
+            GetBrowserNameEnumValue = BrowserName.MSEdge
+        Case "brave"
+            GetBrowserNameEnumValue = BrowserName.Brave
+        Case Else
+            GetBrowserNameEnumValue = 0
+    End Select
+ 
+Error_Handler_Exit:
+    On Error Resume Next
+    Exit Function
+ 
+Error_Handler:
+    MsgBox "The following error has occurred" &amp; vbCrLf &amp; vbCrLf &amp; _
+        "Error Number: " &amp; Err.Number &amp; vbCrLf &amp; _
+        "Error Source: GetBrowserNameEnumValue" &amp; vbCrLf &amp; _
+        "Error Description: " &amp; Err.Description &amp; _
+        Switch(Erl = 0, "", Erl &lt;&gt; 0, vbCrLf &amp; "Line No: " &amp; Erl) _
+        , vbOKOnly + vbCritical, "An Error has Occurred!"
+    Resume Error_Handler_Exit
+End Function</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\WEB</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>S_创建前期引用 - Add Reference</Description>
+    <Text>Private Sub AddReference(ByVal Guid As String)
+
+    On Error Resume Next
+    ThisWorkbook.VBProject.References.AddFromGuid _
+    Guid:=Guid, Major:=1, Minor:=0
+    
+    Select Case Err.Number
+        Case Is = 32813: ' Do nothing
+        Case Is = vbNullString: ' Reference added without issue
+        Case Else
+            Debug.Print "Error " &amp; Err.Number &amp; " (" &amp; Err.Description &amp; ") in procedure AddReference, line " &amp; Erl &amp; "."
+        End Select
+    On Error GoTo 0
+
+End Sub</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\创建对象 &amp; 绑定引用</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>创建FSO - Building File System Object(Late Binding)</Description>
+    <Text>Dim $U[Obj：变量名称] As Object
+Set $U[Obj:变量名称] = CreateObject("Scripting.FileSystemObject")
+</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\创建对象 &amp; 绑定引用</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>创建Outlook邮箱 - Building Outlook(Late Binding)</Description>
+    <Text>Dim $U[Obj:变量名称] As Object
+Set $U[Obj:变量名称] = CreateObject("Outlook.Application")
+</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\创建对象 &amp; 绑定引用</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>创建字典 - Building Dictionary(Late Binding)</Description>
+    <Text>Dim $U[obj:变量名称] As Object
+Set $U[obj:变量名称] = CreateObject("Scripting.Dictionary")
+</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\创建对象 &amp; 绑定引用</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>创建正则表达式 - Building Regular Expressions(Late Binding)</Description>
+    <Text>Dim $U[obj:变量名称] As Object
+Set $U[obj:变量名称] = CreateObject("VBScript.Regexp")
+</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\创建对象 &amp; 绑定引用</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>前期绑定引用 - Early Binding References</Description>
+    <Text>' Dictionary: Microsoft Scripting Runtime
+'             {B691E011-1797-432E-907A-4D8C69339129}
+'
+' Outlook:    Microsoft Outlook [version number] Object Library
+'             {00062FFF-0000-0000-C000-000000000046}
+'
+' FSO:        Microsoft Scripting Runtime
+'             {B691E011-1797-432E-907A-4D8C69339129}
+'
+' REgular:    Microsoft VBScript Regular Expressions 5.5
+'             {3F4DACA7-160D-11D2-A8E9-00104B365C9F}
+'
+' ADODB:      Microsoft ActiveX Data Objects 6.0 Library
+'             {B691E011-1797-432E-907A-4D8C69339129}</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\创建对象 &amp; 绑定引用</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>获取所有引用GUID - List All Reference GUID</Description>
+    <Text>Sub ListAvailableReferences()
+
+    'Lists to Immediate Window
+    Dim i As Long
+   
+    For i = 1 To ThisWorkbook.VBProject.References.Count
+        With ThisWorkbook.VBProject.References(i)
+            Debug.Print .Name, .Description, .Guid, .Major, .Minor
+        End With
+    Next i
+
+End Sub</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\创建对象 &amp; 绑定引用</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>F_剪切板导出到数组 - Clipboard To Array</Description>
+    <Text>' Usage: Call ClipboardToArray()
+Function ClipboardToArray() As Variant
+    
+    ' Install DLL: Microsoft Form Library 2.0
+    ' Install DLL Path: C:\Windows\System32\FM20.DLL
+    ' Dim clip As New MSForms.DataObject
+    
+    On Error Resume Next
+    Dim clip As Object
+    Set clip = CreateObject("New:{1C3B4210-F441-11CE-B9EA-00AA006B1A69}")
+    
+    Dim lines As String
+    Dim arr As Variant
+    
+    clip.GetFromClipboard
+    lines = clip.GetText
+    lines = Replace(lines, vbCr, "")
+    
+    ' Return
+    ClipboardToArray = Split(lines, vbLf)
+    clip.Clear
+    
+End Function</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\剪切板</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>S_写入剪贴板 - Put String To Clipboard</Description>
+    <Text>' Usage: Call PutStringToClipboard("test string")
+Sub PutStringToClipboard(ByVal Content As String)
+
+    Dim objDataObject As Object
+    Set objDataObject = CreateObject("new:{1C3B4210-F441-11CE-B9EA-00AA006B1A69}")
+    
+    With objDataObject
+        .SetText Content
+        .PutInClipboard
+        .GetFromClipboard
+    End With
+
+End Sub</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\剪切板</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>清空剪切板 - Clear Clipboard</Description>
+    <Text>' Clear the clipboard
+Application.CutCopyMode = False</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\剪切板</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>S_创建超链接 - Add Hyperlink</Description>
+    <Text>' Usage: Call AddHyperlink(Sheets("Sheet1"), Range("A1"), "http://www.baidu.com/", "test")
+Public Sub AddHyperlink(ByVal Ws As Worksheet, ByVal Rng As Range, ByVal strUrl As String, ByVal strText As String)
+    
+    With Worksheets(Sheet.Name)
+        .Hyperlinks.Add anchor:=.Range(r.Address), Address:=url, TextToDisplay:=text
+    End With
+
+End Sub
+</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\单元格</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>S_取消筛选 - Reset Filters</Description>
+    <Text>Sub ResetFilters()
+
+    On Error Resume Next
+    ActiveSheet.ShowAllData
+
+End Sub</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\单元格</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>S_设置下拉列表 - Set Dropdown</Description>
+    <Text>' Usage: Call SetDropdown(Range("A1"), "test1,test2,...")
+Sub SetDropdown(ByVal Rng As Range, ByVal FormulaValue As String)
+    
+    With Rng .Validation
+        .Delete
+        .Add Type:=xlValidateList, AlertStyle:=xlValidAlertStop, Operator:=xlBetween, Formula1:=FormulaValue
+        .IgnoreBlank = True
+        .InCellDropdown = True
+        .InputTitle = Empty
+        .ErrorTitle = Empty
+        .InputMessage = Empty
+        .ErrorMessage = Empty
+        .IMEMode = xlIMEModeNoControl
+        .ShowInput = True
+        .ShowError = True
+    End With
+
+End Sub</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\单元格</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>单元格字符串换行显示 - Wrap Text</Description>
+    <Text>Range($U[obj:单元格地址]).Select
+CommandBars.ExecuteMso ("WrapText")</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\单元格</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>获取最后一列索引 - Get Last Column Index</Description>
+    <Text>Dim $U[lng:变量名称] As Long
+$U[lng:变量名称] = .Cells($U[str:行号], Columns.Count).End(xlToLeft).Column</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\单元格</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>获取最后一行索引 - Get Last Row Index</Description>
+    <Text>Dim $U[lng:变量名称] As Long
+$U[lng:变量名称] = .Cells(Rows.Count, $U[str/lng:列名/列索引]).End(xlUp).Row</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\单元格</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>F_用分隔符将字符串分割为数组 - Split a string into array by separator</Description>
+    <Text>Function SplitStrIntoArray(ByVal Text As String, ByVal Separator As String) As Variant
+
+    Dim arr As Variant
+    Dim i As Integer
+    
+    If Len(Text) &gt; 0 Then
+        arr = Split(Text, Separator)
+        For i = LBound(arr) To UBound(arr)
+            arr(i) = Trim(arr(i))
+        Next i
+    Else
+        arr = Array()
+    End If
+
+    SplitStrIntoArray = arr
+    
+End Function</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\字符串</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>F_获取工作表名(ADODB) - Get All Sheet Names</Description>
+    <Text>Function GetSheetNames(ByVal FilePath As String) As Collection
+
+    On Error GoTo GetSheetNames_Error
+    Dim conn As Object
+    Set conn = CreateObject("ADODB.Connection")
+    
+    Select Case Application.Version * 1
+        Case Is &lt;= 11
+            conn.ConnectionString = "Provider=Microsoft.JET.OLEDB.4.0;" _
+                &amp; "Extended Properties=Excel 8.0;" _
+                &amp; "Data Source=" &amp; FilePath
+            conn.Open
+        Case Is &gt;= 12
+            conn.ConnectionString = "Provider=Microsoft.ACE.OLEDB.12.0;" _
+                &amp; "Data Source=" &amp; FilePath &amp; ";" _
+                &amp; "Extended Properties=""Excel 12.0 Xml;" _
+                &amp; "HDR=YES"";"
+            conn.Open
+    End Select
+    
+    Dim cata As Object
+    Set cata = CreateObject("ADOX.Catalog")
+    Set cata.ActiveConnection = conn
+    Dim tbl As Object
+    Dim coll As New Collection
+    
+    For Each tbl In cata.Tables
+        coll.Add tbl.Name
+    Next
+    
+    ' Return
+    Set GetSheetNames = coll
+    
+    ' Release object
+    conn.Close
+    Set conn = Nothing: Set cata = Nothing
+    
+    On Error GoTo 0
+    Exit Function
+
+GetSheetNames_Error:
+    MsgBox "Error " &amp; Err.Number &amp; " (" &amp; Err.Description &amp; ") in procedure GetSheetNames, line " &amp; Erl &amp; "."
+
+End Function</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\工作表</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>判断工作表是否存在 - Is Sheet Exists</Description>
+    <Text>Dim $U[bol:变量名称] As Boolean 
+$U[bol:变量名称] = Evaluate("ISREF('" &amp; $U[str:工作表名] &amp; "'!A1)")</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\工作表</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>工作表公式为手动重算 - Calculation(Manual)</Description>
+    <Text>Excel.Application.Calculation = xlCalculationManual
+</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\工作表</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>工作表公式为自动重算 - Calculation(Automatic)</Description>
+    <Text>Excel.Application.Calculation = xlCalculationAutomatic
+</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\工作表</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>判断日期属于哪个季度(Excel)</Description>
+    <Text>LEN(2^MONTH(A1))</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\工作表函数</Category>
+    <Language>0</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>数组转置 - Array Transpose</Description>
+    <Text>Range("K3").Resize(UBound(arr, 2) + 1, 2).value = Application.WorksheetFunction.Transpose(arr)</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\数组</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>F_判断硬盘是否存在(FSO) - Is Drive Exists</Description>
+    <Text>' Usage: Call IsDriveExists("D:\")
+Function IsDriveExists(ByVal driveName As String) As Boolean
+    
+    On Error Resume Next
+    Dim fso As Object
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    
+    If fso.DriveExists(driveName) = True Then
+        IsDriveExists = True
+    Else
+        IsDriveExists = False
+    End If
+    
+End Function</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\文件相关</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>F_获取文件路径(FileDialog) - Get Selected File Path</Description>
+    <Text>' Usage    : Call GetFilePath() or Call GetFilePath("*.xlsx;*.xlsm;*.txt")
+Function GetFilePath(Optional ByVal Extension As String = "*.*") As Variant
+    
+    With Application.FileDialog(msoFileDialogFilePicker)
+        .Filters.Clear
+        .AllowMultiSelect = False
+        .Filters.Add "Select items", Extension
+        .Title = "Continue"
+        If .Show = -1 Then GetFilePath = .SelectedItems(1)
+    End With
+
+End Function</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\文件相关</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>F_获取文件路径包含子文件夹(Shell) - Get All File Path</Description>
+    <Text>' Usage: Variable = GetAllFilePath("C:\Users\AreasomesWork\Desktop\FolderPath")
+Function GetAllFilePath(ByVal ParentDirectory As String, Optional FileFilter As String = "*.csv") As Variant
+    
+    On Error Resume Next
+    If (Right(ParentDirectory, 1) &lt;&gt; "\") Then
+        ParentDirectory = ParentDirectory &amp; "\"
+    End If
+    
+    Dim wscShell As Object
+    Set wscShell = CreateObject("WScript.Shell")
+    
+    '// using a hidden window, pipe the output of the command to the CLIP.EXE utility
+    wscShell.Run "CMD /C DIR """ &amp; ParentDirectory &amp; FileFilter &amp; """ /S /B /A:-D | clip", 0, True
+    
+    Dim htmlShell As Object
+    Set htmlShell = CreateObject("htmlfile")
+    
+    '// read the clipboard text
+    Dim result As String
+    result = htmlShell.ParentWindow.ClipboardData.GetData("text")
+    
+    '// return
+    Dim tmp As Variant
+    tmp = VBA.Split(result, VBA.vbCrLf)
+    ReDim Preserve tmp(UBound(tmp) - 1)
+    GetAllFilePath = tmp
+    
+    '// release
+    Set wscShell = Nothing
+    Set htmlShell = Nothing
+
+End Function</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\文件相关</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>S_创建文件夹(FSO) - Create Folder</Description>
+    <Text>' Usage: Call CreateFolder("C:\Users\Admin\Desktop\NewFolder")
+Sub CreateFolder(ByVal FolderPath As String)
+    
+    On Error Resume Next
+    Dim fso As Object
+    Set fso = CreateObject("Scripting.FileSystemObject")
+
+    fso.CreateFolder FolderPath
+
+End Sub
+
+</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\文件相关</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>S_删除文件(FSO) - Delete File</Description>
+    <Text>' Usage: Call DeleteFile("C:\Users\Admin\Desktop\Test.txt)
+Sub DeleteFile(ByVal FilePath As String)
+    
+    On Error Resume Next
+    Dim fso As Object
+    Set fso = CreateObject("Scripting.FileSystemObject")
+
+    fso.DeleteFile FilePath
+
+End Sub
+
+</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\文件相关</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>S_复制文件(FSO) - Copy File To Path</Description>
+    <Text>' Usage: Call CopyFile("C:\Users\Admin\Desktop\Test.txt", "C:\Users\Admin\Desktop\NewFolder")
+Sub CopyFile(ByVal FilePath As String, ByVal FolderPath As String)
+    
+    On Error Resume Next
+    Dim fso As Object
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    
+    If Right(FolderPath, 1) &lt;&gt; "\" Then FolderPath = FolderPath + "\"
+    fso.CopyFile FilePath, FolderPath
+
+End Sub</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\文件相关</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>S_复制文件夹(FSO) - Copy Folder</Description>
+    <Text>' Usage: Call CopyFolder("C:\Users\Admin\Desktop\OldFolder", "C:\Users\Admin\Desktop\NewFolder")
+Sub CopyFolder(ByVal FolderPathFrom As String, ByVal FolderPathTo As String)
+    
+    On Error Resume Next
+    Dim fso As Object
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    
+    If Right(FolderPathTo , 1) &lt;&gt; "\" Then FolderPathTo = FolderPathTo + "\"
+    fso.CopyFolder FolderPathFrom , FolderPathTo 
+
+End Sub
+</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\文件相关</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>S_移动文件(FSO) - Move File</Description>
+    <Text>' Usage: Call MoveFile("C:\Users\Admin\Desktop\Test.txt", "C:\Users\Admin\Desktop\NewFolder")
+Sub MoveFile(ByVal FilePath As String, ByVal FolderPath As String)
+    
+    On Error Resume Next
+    Dim fso As Object
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    
+    If Right(FolderPath, 1) &lt;&gt; "\" Then FolderPath = FolderPath + "\"
+    fso.MoveFile FilePath, FolderPath
+
+End Sub
+</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\文件相关</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>全路径提取文件名 - Get File Name With File Path</Description>
+    <Text>Dim $U[str:变量名称] As String
+$U[str:变量名称] = Right($U[str:变量名称], Len($U[str:变量名称]) - InStrRev($U[str:变量名称], "\"))
+</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\文件相关</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>打开文件夹(Shell) - Open Folder With Shell</Description>
+    <Text>Shell "explorer.exe " &amp; $U[str:文件夹路径], vbMaximizedFocus</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\文件相关</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>重命名文件&amp;文件夹 - Rename File</Description>
+    <Text>' Rename the file, the file should be not opened and in the same drive.
+Name $U[str:文件全路径] As $U[str:新文件全路径]
+</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\文件相关</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>F_获取屏幕分辨率 - Get Display Resolution</Description>
+    <Text>Function GetDisplayResolution() As String
+    
+    On Error Resume Next
+    Dim x As Integer, y As Integer
+    
+    x = GetSystemMetrics(0)
+    y = GetSystemMetrics(1)
+    GetDisplayResolution = x &amp; " X " &amp; y
+
+End Function</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\系统相关</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>获取Office版本 - Get Office Version</Description>
+    <Text>Dim $U[str:变量名称] As String
+$U[str:变量名称] = Environ("PROCESSOR_ARCHITECTURE")</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\系统相关</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>获取计算机名 - Get Computer Name</Description>
+    <Text>Dim $U[str:变量名称] As String
+$U[str:变量名称] = VBA.Environ("ComputerName")</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\系统相关</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>获取计算机用户名 - Get Computer Username</Description>
+    <Text>Dim $U[str:变量名称]As String
+$U[str:变量名称] = VBA.Environ("Username")
+</Text>
+    <Author>Areasome</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA\系统相关</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>Code at start and end of method</Description>
+    <Text>$P[COMMENT_PREFIX] Text at start of procedure
+$P[METHOD_BODY_EXCLUDING_DECLARATIONS]$P[COMMENT_PREFIX] Text at end of procedure
+</Text>
+    <Author>Carlos</Author>
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>ScreenMousePointer</Description>
+    <Text>
+	Screen.MousePointer = vbHourGlass
+
+	$P[I]
+
+	Screen.MousePointer = vbDefault
+</Text>
+    <Author />
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+  <CodeTemplate>
+    <Description>Surround selected text with</Description>
+    <Text>$P[COMMENT_PREFIX] Code before selected text
+$P[SELECTED_TEXT]$P[COMMENT_PREFIX] Code after selected text
+</Text>
+    <Author />
+    <Comment />
+    <ExpansionKeyword />
+    <CommandName />
+    <Category>VB/VBA</Category>
+    <Language>8</Language>
+  </CodeTemplate>
+</CodeTemplates>
