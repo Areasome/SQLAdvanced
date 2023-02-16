@@ -13,7 +13,7 @@ Attribute VB_Exposed = False
 ' Procedure Kind: Class
 ' Procedure Access: Public
 ' Author: Areasome
-' Date: 2022/7/29
+' Date: 2023/2/16
 ' ----------------------------------------------------------------
 Option Explicit
 
@@ -95,11 +95,11 @@ Public Property Let DataSource(ByVal strNewValue As String)
 
     On Error GoTo DataSource_Error
     tSQLConns.DataSource = strNewValue
-    ' Get data name with data source
+    '// Get data name with data source
     tADO.DataName = Right(tSQLConns.DataSource, Len(tSQLConns.DataSource) - InStrRev(tSQLConns.DataSource, "\"))
-    ' Get folder name with data source
+    '// Get folder name with data source
     tADO.DataFolder = Replace(tSQLConns.DataSource, tADO.DataName, "")
-    ' Get data extension with data name
+    '// Get data extension with data name
     tADO.DataExtension = LCase(Right(tADO.DataName, Len(tADO.DataName) - InStrRev(tADO.DataName, ".")))
     
     On Error GoTo 0
@@ -107,57 +107,9 @@ Public Property Let DataSource(ByVal strNewValue As String)
     
 DataSource_Error:
     Debug.Print "Error " & Err.Number & " (" & Err.Description & ") in procedure DataSource, line " & Erl & "."
-
+    Call CloseConnection
+    
 End Property
-
-' TODO: sql query fields to array
-Public Sub ExecuteToArray()
-    
-    On Error GoTo ExecuteToArray_Error
-    ' Error for sql query string is empty
-    If tADO.ExcuteString = "" Then Exit Sub
-    
-    ' Run the SQL query and return the query result to array
-    tADO.ExcuteResult = Empty
-    Set tADO.Recordset = tADO.Connection.Execute(tADO.ExcuteString)
-    tADO.ExcuteResult = tADO.Recordset.GetRows
-    Debug.Print CStr(Now()) & " Excute data success..."
-    
-    On Error GoTo 0
-    Exit Sub
-
-ExecuteToArray_Error:
-    Debug.Print "Error " & Err.Number & " (" & Err.Description & ") in procedure ExecuteToArray, line " & Erl & "."
-
-End Sub
-
-' TODO: SQL query fileds to excel range
-Public Sub ExcuteToRange(ByVal Rng As Range, Optional Header As Boolean = False)
-    
-    On Error GoTo ExcuteToRange_Error
-    ' Error for sql query string is empty
-    If tADO.ExcuteString = "" Then Exit Sub
-    Set tADO.Recordset = tADO.Connection.Execute(tADO.ExcuteString)
-    
-    ' Write data with header
-    If Header Then
-        Dim i As Integer, n As Integer
-        For i = 0 To tADO.Recordset.Fields.Count - 1
-            Rng.Offset(0, i).Value = tADO.Recordset.Fields(i).Name
-        Next
-        Rng.Offset(1, 0).CopyFromRecordset tADO.Recordset
-    Else
-        Rng.CopyFromRecordset tADO.Recordset
-    End If
-    Debug.Print CStr(Now()) & " Excute data success..."
-    
-    On Error GoTo 0
-    Exit Sub
-
-ExcuteToRange_Error:
-    Debug.Print "Error " & Err.Number & " (" & Err.Description & ") in procedure ExcuteToRange, line " & Erl & "."
-
-End Sub
 
 ' TODO: SQL query fileds to a new excel
 ' TODO: SQL query fileds to file
@@ -166,9 +118,9 @@ End Sub
 Public Sub Connection()
 
     On Error GoTo Connection_Error
-    ' HDR=Yes; indicates that the first row contains columnnames, not data.
-    ' HDR=No; indicates the opposite.
-    ' The state is enabled by default
+    '// HDR=Yes; indicates that the first row contains columnnames, not data.
+    '// HDR=No; indicates the opposite.
+    '// The state is enabled by default
     Dim strHDR As String
     If tSQLConns.HDR = 0 Then
         strHDR = "HDR=YES;"
@@ -176,11 +128,11 @@ Public Sub Connection()
         strHDR = "HDR=NO;"
     End If
     
-    ' Use this one when you want to treat all data in the file as text,
-    ' overriding Excels column type "General" to guess what type of data is in the column.
-    ' IMEX=1; tells the driver to always read "intermixed" (numbers, dates, strings etc) data columns as text.
-    ' Note that this option might affect excel sheet write access negative.
-    ' The state is enabled by default
+    '// Use this one when you want to treat all data in the file as text,
+    '// overriding Excels column type "General" to guess what type of data is in the column.
+    '// IMEX=1; tells the driver to always read "intermixed" (numbers, dates, strings etc) data columns as text.
+    '// Note that this option might affect excel sheet write access negative.
+    '// The state is enabled by default
     Dim strIMEX As String
     If tSQLConns.IMEX = 0 Then
         strIMEX = "IMEX=1;"
@@ -188,9 +140,9 @@ Public Sub Connection()
         strIMEX = ""
     End If
     
-    ' The delimiter can be specified in the registry at the following location:
-    ' HKEY_LOCAL_MACHINE \ SOFTWARE \ Microsoft \ Jet \ 4.0 \ Engines \ Text
-    ' Format = TabDelimited or Format = Delimited(;)
+    '// The delimiter can be specified in the registry at the following location:
+    '// HKEY_LOCAL_MACHINE \ SOFTWARE \ Microsoft \ Jet \ 4.0 \ Engines \ Text
+    '// Format = TabDelimited or Format = Delimited(;)
     Dim strFMT As String
     If tSQLConns.FMT <> "" Then
         strFMT = "FMT=Delimited(" & tSQLConns.FMT & ");"
@@ -267,10 +219,10 @@ Public Sub Connection()
     End Select
     Debug.Print CStr(Now()) & " ADODB Connection string: " & Chr(10) & tSQLConns.ConnectionString
     
-    ' Connection to Microsoft OLEDB
+    '// Connection to Microsoft OLEDB
     tADO.Connection.Open tSQLConns.ConnectionString
     
-    ' Error for conn failed
+    '// Error for conn failed
     If tADO.Connection.State <> 1 Then
         GoTo Connection_Error
     Else
@@ -282,14 +234,96 @@ Public Sub Connection()
 
 Connection_Error:
     Debug.Print "Error " & Err.Number & " (" & Err.Description & ") in procedure Connection, line " & Erl & "."
+    Call CloseConnection
+    
+End Sub
+
+Public Sub Query()
+    
+    On Error GoTo Query_Error
+    If tADO.ExcuteString = "" Then Exit Sub
+    Set tADO.Recordset = tADO.Connection.Execute(tADO.ExcuteString)
+    
+    On Error GoTo 0
+    Exit Sub
+
+Query_Error:
+    Debug.Print "Error " & Err.Number & " (" & Err.Description & ") in procedure Query, line " & Erl & "."
+    Call CloseConnection
+    
+End Sub
+
+Public Sub ExcuteToArray(ByRef Data As Variant, Optional Header As Boolean = False)
+
+    On Error GoTo ExcuteToArray_Error
+    If tADO.ExcuteString = "" Then Exit Sub
+    
+    Dim arrData As Variant
+    Dim arrHeader As Variant
+    Dim i As Long, y As Long
+    
+    If Header Then
+        arrData = tADO.Recordset.GetRows
+        ReDim arrHeader(0 To tADO.Recordset.Fields.Count - 1, 0 To UBound(arrData, 2) + 1)
+        For i = 0 To tADO.Recordset.Fields.Count - 1
+            arrHeader(i, 0) = tADO.Recordset.Fields(i).Name
+        Next i
+        For i = 0 To UBound(arrData, 2)
+            For y = 0 To tADO.Recordset.Fields.Count - 1
+                arrHeader(y, i + 1) = arrData(y, i)
+            Next
+        Next
+        Data = arrHeader
+        tADO.ExcuteResult = arrHeader
+    Else
+        Data = tADO.Recordset.GetRows
+        tADO.ExcuteResult = Data
+    End If
+    
+    Debug.Print CStr(Now()) & " Excute data success..."
+    
+    On Error GoTo 0
+    Exit Sub
+
+ExcuteToArray_Error:
+    Debug.Print "Error " & Err.Number & " (" & Err.Description & ") in procedure ExcuteToArray, line " & Erl & "."
+    Call CloseConnection
+    
+End Sub
+
+Public Sub ExcuteToRange(ByVal Rng As Range, Optional Header As Boolean = False)
+    
+    On Error GoTo ExcuteToRange_Error
+    '// Error for sql query string is empty
+    If tADO.ExcuteString = "" Then Exit Sub
+    'Set tADO.Recordset = tADO.Connection.Execute(tADO.ExcuteString)
+    
+    '// Write data with header
+    If Header Then
+        Dim i As Integer, n As Integer
+        For i = 0 To tADO.Recordset.Fields.Count - 1
+            Rng.Offset(0, i).Value = tADO.Recordset.Fields(i).Name
+        Next
+        Rng.Offset(1, 0).CopyFromRecordset tADO.Recordset
+    Else
+        Rng.CopyFromRecordset tADO.Recordset
+    End If
+    Debug.Print CStr(Now()) & " Excute data success..."
+    
+    On Error GoTo 0
+    Exit Sub
+
+ExcuteToRange_Error:
+    Debug.Print "Error " & Err.Number & " (" & Err.Description & ") in procedure ExcuteToRange, line " & Erl & "."
+    Call CloseConnection
     
 End Sub
 
 Public Sub CreateSchema(Optional strNewKey As String = Empty, Optional strNewValue As String = Empty)
-' https://docs.microsoft.com/en-us/sql/odbc/microsoft/schema-ini-file-text-file-driver?view=sql-server-ver16
+'// https://docs.microsoft.com/en-us/sql/odbc/microsoft/schema-ini-file-text-file-driver?view=sql-server-ver16
 
     On Error GoTo CreateSchema_Error
-    ' Define constants manually
+    '// Define constants manually
     Const ForReading = 1, ForWriting = 2, ForAppending = 8
     Const TristateUseDefault = -2, TristateTrue = -1, TristateFalse = 0
 
@@ -300,7 +334,7 @@ Public Sub CreateSchema(Optional strNewKey As String = Empty, Optional strNewVal
     strPath = tADO.DataFolder & "\Schema.ini"
     
     If fso.FileExists(strPath) Then
-        Open strPath For Output As #1: Close #1 ' Clear text contents
+        Open strPath For Output As #1: Close #1 '// Clear text contents
     Else
         fso.CreateTextFile (strPath)
     End If
@@ -334,7 +368,25 @@ Public Sub CreateSchema(Optional strNewKey As String = Empty, Optional strNewVal
 
 CreateSchema_Error:
     Debug.Print "Error " & Err.Number & " (" & Err.Description & ") in procedure CreateSchema, line " & Erl & "."
+    Call CloseConnection
+    
+End Sub
 
+Public Sub CloseConnection()
+    
+    On Error GoTo CloseConnection_Error
+    tADO.Recordset.Close
+    tADO.Connection.Close
+    Set tADO.Recordset = Nothing
+    Set tADO.Connection = Nothing
+    Debug.Print CStr(Now()) & " Close connection..."
+    
+    On Error GoTo 0
+    Exit Sub
+
+CloseConnection_Error:
+    Debug.Print CStr(Now()) & " Close connection..."
+    
 End Sub
 
 Private Sub Class_Initialize()
@@ -346,5 +398,5 @@ Private Sub Class_Initialize()
     If tADO.Recordset Is Nothing Then
         Set tADO.Recordset = CreateObject("ADODB.Recordset")
     End If
-    
+
 End Sub
