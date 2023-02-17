@@ -32,8 +32,8 @@ Private Type ADO
     Connection As Object
     Recordset As Object
     
-    ExcuteString As String
-    ExcuteResult As Variant
+    ExecuteString As String
+    ExecuteResult As Variant
     
     DataFolder As String
     DataName As String
@@ -43,27 +43,27 @@ End Type
 Dim tSQLConns As SQLConnectionStrings
 Dim tADO As ADO
 
-Public Property Get ExcuteResult() As Variant
+Public Property Get ExecuteResult() As Variant
 
-    ExcuteResult = tADO.ExcuteResult
-
-End Property
-
-Public Property Get ExcuteString() As String
-
-    ExcuteString = tADO.ExcuteString
+    ExecuteResult = tADO.ExecuteResult
 
 End Property
 
-Public Property Let ExcuteString(ByVal strNewValue As String)
+Public Property Get ExecuteString() As String
 
-    tADO.ExcuteString = strNewValue
+    ExecuteString = tADO.ExecuteString
 
 End Property
 
-Public Property Let ExcuteResult(ByVal varNewValue As Variant)
+Public Property Let ExecuteString(ByVal strNewValue As String)
 
-    tADO.ExcuteResult = varNewValue
+    tADO.ExecuteString = strNewValue
+
+End Property
+
+Public Property Let ExecuteResult(ByVal varNewValue As Variant)
+
+    tADO.ExecuteResult = varNewValue
 
 End Property
 
@@ -241,8 +241,8 @@ End Sub
 Public Sub Query()
     
     On Error GoTo Query_Error
-    If tADO.ExcuteString = "" Then Exit Sub
-    Set tADO.Recordset = tADO.Connection.Execute(tADO.ExcuteString)
+    If tADO.ExecuteString = "" Then Exit Sub
+    Set tADO.Recordset = tADO.Connection.Execute(tADO.ExecuteString)
     
     On Error GoTo 0
     Exit Sub
@@ -253,10 +253,10 @@ Query_Error:
     
 End Sub
 
-Public Sub ExcuteToArray(ByRef Data As Variant, Optional Header As Boolean = False)
+Public Sub ExecuteToArray(ByRef Data As Variant, Optional Header As Boolean = False)
 
-    On Error GoTo ExcuteToArray_Error
-    If tADO.ExcuteString = "" Then Exit Sub
+    On Error GoTo ExecuteToArray_Error
+    If tADO.ExecuteString = "" Then Exit Sub
     
     Dim arrData As Variant
     Dim arrHeader As Variant
@@ -274,29 +274,29 @@ Public Sub ExcuteToArray(ByRef Data As Variant, Optional Header As Boolean = Fal
             Next
         Next
         Data = arrHeader
-        tADO.ExcuteResult = arrHeader
+        tADO.ExecuteResult = arrHeader
     Else
         Data = tADO.Recordset.GetRows
-        tADO.ExcuteResult = Data
+        tADO.ExecuteResult = Data
     End If
     
-    Debug.Print CStr(Now()) & " Excute data success..."
+    Debug.Print CStr(Now()) & " Execute data success..."
     
     On Error GoTo 0
     Exit Sub
 
-ExcuteToArray_Error:
-    Debug.Print "Error " & Err.Number & " (" & Err.Description & ") in procedure ExcuteToArray, line " & Erl & "."
+ExecuteToArray_Error:
+    Debug.Print "Error " & Err.Number & " (" & Err.Description & ") in procedure ExecuteToArray, line " & Erl & "."
     Call CloseConnection
     
 End Sub
 
-Public Sub ExcuteToRange(ByVal Rng As Range, Optional Header As Boolean = False)
+Public Sub ExecuteToRange(ByVal Rng As Range, Optional Header As Boolean = False)
     
-    On Error GoTo ExcuteToRange_Error
+    On Error GoTo ExecuteToRange_Error
     '// Error for sql query string is empty
-    If tADO.ExcuteString = "" Then Exit Sub
-    'Set tADO.Recordset = tADO.Connection.Execute(tADO.ExcuteString)
+    If tADO.ExecuteString = "" Then Exit Sub
+    'Set tADO.Recordset = tADO.Connection.Execute(tADO.ExecuteString)
     
     '// Write data with header
     If Header Then
@@ -308,13 +308,13 @@ Public Sub ExcuteToRange(ByVal Rng As Range, Optional Header As Boolean = False)
     Else
         Rng.CopyFromRecordset tADO.Recordset
     End If
-    Debug.Print CStr(Now()) & " Excute data success..."
+    Debug.Print CStr(Now()) & " Execute data success..."
     
     On Error GoTo 0
     Exit Sub
 
-ExcuteToRange_Error:
-    Debug.Print "Error " & Err.Number & " (" & Err.Description & ") in procedure ExcuteToRange, line " & Erl & "."
+ExecuteToRange_Error:
+    Debug.Print "Error " & Err.Number & " (" & Err.Description & ") in procedure ExecuteToRange, line " & Erl & "."
     Call CloseConnection
     
 End Sub
