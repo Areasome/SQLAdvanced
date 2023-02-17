@@ -1,0 +1,12 @@
+Public clsModernButton As New ModernButton
+
+Private Sub btnSavebg_Click()
+
+        MsgBox "Thanks for feedback!"
+End Sub
+
+Private Sub UserForm_Initialize()
+
+    clsModernButton.InitModernButton Me
+    
+End Sub
