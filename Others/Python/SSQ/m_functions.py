@@ -1,5 +1,6 @@
 import os
 from tabulate import tabulate
+from collections import Counter
 
 import itertools
 import datetime
@@ -15,7 +16,7 @@ def print_lottery_data(row=30, column=9):
         column (int, optional): 原始数据截至列数. Defaults to 9.
     """
     debug_print('开始读取数据...\n')
-    
+
     # 读取数据(开奖信息)
     with open(os.getcwd() + '\\ssq_asc.txt', 'r') as f:
         data_lottery = []
@@ -30,36 +31,13 @@ def print_lottery_data(row=30, column=9):
     table = tabulate(data_lottery, headers=headers, tablefmt='psql')
     print(table)
     debug_print(f'打印{row}期数据完成!\n')
-    
-    # # 格式化开奖数据
-    # for line in data_lottery:
-    #     new_line = line[:2]
-    #     for i in range(1,34):
-    #         if i < 10:
-
-    #             new_line.append("")
-    #         else:
-    #             new_line.append('')
-
-    # print(new_line)
-
-    # # 整理数据格式为二维List 红球1,红球2,红球3,红球4,红球5,红球6,蓝球
-    # tmp = []
-    # [tmp.append(line[2:]) for line in data_lottery]
-
-    # # 转换数据格式为一维列表
-    # od_data = [element for sublist in tmp for element in sublist]
-    # od_data = Counter(od_data)
-    # print(od_data)
-
-    # # 转换数据格式为一维列表
-    # # od_data = [element for sublist in data for element in sublist]
-    # # od_data = Counter(data)
 
 
 def requests_data():
     """请求更新数据并保存到本地
     """
+    debug_print('开始更新开奖数据...\n')
+
     url = 'http://data.17500.cn/ssq_asc.txt'
     path = os.getcwd() + '\\ssq_asc.txt'
     headers = {
@@ -76,7 +54,7 @@ def requests_data():
         debug_print('更新数据更新失败, 请检查网络链接!\n')
 
 
-def get_all_combos():
+def make_all_combos():
     """生成所有排列组合
     """
 
@@ -106,6 +84,54 @@ def get_all_combos():
             pbar.update(1)
 
     debug_print('生成排列组合完成!\n')
+
+
+def chunk_data(row_size=10):
+    """将开奖数据按指定行数进行分割汇总,统计每个数字出现的次数
+
+    Args:
+        row (int, optional): 指定要切割的行数. Defaults to 10.
+    """
+    debug_print('开始读取数据...\n')
+
+    # 读取数据(开奖信息) 格式为二维List red1,red2,red3,red4,red5,red6,blue
+    data_lottery = []
+    with open('Others\Python\SSQ\ssq_asc.txt', 'r') as f:
+        for line in f:
+            fields = line.strip().split()[2:9]
+            data_lottery.append(fields)
+
+    data_rows = []
+    result = []
+    # 将数据切割为指定行数
+    for i in range(0, len(data_lottery), row_size):
+        rows = data_lottery[i:i + row_size]
+
+        # 将数据转换成1维列表
+        data_rows = [element for sublist in rows for element in sublist]
+
+        # 统计数据出现次数
+        rows_counter = Counter(data_rows)
+
+        # 将Counter中的键按整数类型排序
+        sorted_keys = sorted(map(int, rows_counter.keys()))
+
+        # 创建一个新的Counter对象，并为缺失的键添加键值对
+        new_counter = Counter({f'{k:02d}': 0 for k in range(1, 34)})
+        new_counter.update(rows_counter)
+
+        # 将新的Counter对象中的键按照排好序的键列表进行排序
+        sorted_output = Counter({f'{k:02d}': new_counter[f'{k:02d}'] for k in sorted_keys})
+
+        # 将结果字典保存到result里
+        result.append(dict(sorted_output))
+
+    # 转换字典为列表
+    rows = [[r[k] for k in sorted(r.keys())] for r in result]
+
+    # 打印表格
+    print(tabulate(rows, headers=[f'red {k}' for k in range(1, 34)]))
+    debug_print('按期统计数据数据完成!\n')
 
 
 def debug_print(message):
