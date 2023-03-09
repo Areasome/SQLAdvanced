@@ -1,5 +1,6 @@
 import os
 from tabulate import tabulate
+from collections import Counter
 
 import itertools
 import datetime
@@ -15,7 +16,7 @@ def print_lottery_data(row=30, column=9):
         column (int, optional): 原始数据截至列数. Defaults to 9.
     """
     debug_print('开始读取数据...\n')
-    
+
     # 读取数据(开奖信息)
     with open(os.getcwd() + '\\ssq_asc.txt', 'r') as f:
         data_lottery = []
@@ -30,36 +31,13 @@ def print_lottery_data(row=30, column=9):
     table = tabulate(data_lottery, headers=headers, tablefmt='psql')
     print(table)
     debug_print(f'打印{row}期数据完成!\n')
-    
-    # # 格式化开奖数据
-    # for line in data_lottery:
-    #     new_line = line[:2]
-    #     for i in range(1,34):
-    #         if i < 10:
-
-    #             new_line.append("")
-    #         else:
-    #             new_line.append('')
-
-    # print(new_line)
-
-    # # 整理数据格式为二维List 红球1,红球2,红球3,红球4,红球5,红球6,蓝球
-    # tmp = []
-    # [tmp.append(line[2:]) for line in data_lottery]
-
-    # # 转换数据格式为一维列表
-    # od_data = [element for sublist in tmp for element in sublist]
-    # od_data = Counter(od_data)
-    # print(od_data)
-
-    # # 转换数据格式为一维列表
-    # # od_data = [element for sublist in data for element in sublist]
-    # # od_data = Counter(data)
 
 
 def requests_data():
     """请求更新数据并保存到本地
     """
+    debug_print('开始更新开奖数据...\n')
+
     url = 'http://data.17500.cn/ssq_asc.txt'
     path = os.getcwd() + '\\ssq_asc.txt'
     headers = {
@@ -108,6 +86,54 @@ def make_all_combos():
     debug_print('生成排列组合完成!\n')
 
 
+def chunk_data(row_size=10):
+    """将开奖数据按指定行数进行分割汇总,统计每个数字出现的次数
+
+    Args:
+        row (int, optional): 指定要切割的行数. Defaults to 10.
+    """
+    debug_print('开始读取数据...\n')
+
+    # 读取数据(开奖信息) 格式为二维List red1,red2,red3,red4,red5,red6,blue
+    data_lottery = []
+    with open('Others\Python\SSQ\ssq_asc.txt', 'r') as f:
+        for line in f:
+            fields = line.strip().split()[2:9]
+            data_lottery.append(fields)
+
+    data_rows = []
+    result = []
+    # 将数据切割为指定行数
+    for i in range(0, len(data_lottery), row_size):
+        rows = data_lottery[i:i + row_size]
+
+        # 将数据转换成1维列表
+        data_rows = [element for sublist in rows for element in sublist]
+
+        # 统计数据出现次数
+        rows_counter = Counter(data_rows)
+
+        # 将Counter中的键按整数类型排序
+        sorted_keys = sorted(map(int, rows_counter.keys()))
+
+        # 创建一个新的Counter对象，并为缺失的键添加键值对
+        new_counter = Counter({f'{k:02d}': 0 for k in range(1, 34)})
+        new_counter.update(rows_counter)
+
+        # 将新的Counter对象中的键按照排好序的键列表进行排序
+        sorted_output = Counter({f'{k:02d}': new_counter[f'{k:02d}'] for k in sorted_keys})
+
+        # 将结果字典保存到result里
+        result.append(dict(sorted_output))
+
+    # 转换字典为列表
+    rows = [[r[k] for k in sorted(r.keys())] for r in result]
+
+    # 打印表格
+    print(tabulate(rows, headers=[f'red {k}' for k in range(1, 34)]))
+    debug_print('按期统计数据数据完成!\n')
+
+
 def debug_print(message):
     """打印带时间戳的调试信息到控制台
 
@@ -120,73 +146,3 @@ def debug_print(message):
     timestamp_str = current_time.strftime('[%Y-%m-%d %H:%M:%S]')
     # 打印带时间戳的调试信息
     print(f'{timestamp_str} {message}')
-
-
-def has_consecutive_numbers(line):
-    """检查有没有3个或3个以上连续自然数
-
-    Args:
-        line (字符串): 一组组合数据
-    """
-    count = 1
-    for i in range(len(line)-1):
-        if int(line[i+1]) == int(line[i])+1:
-            count += 1
-            if count >= 3:
-                return True
-        else:
-            count = 1
-    return False
-
-def exception_consecutive_numbers():
-    # 打开原始文本文件和新建的文本文件
-    with open('all_combos.txt', 'r') as infile, open('combos_without_consecutive_numbers.txt', 'w') as outfile:
-        # 循环读取每一行
-        for line in infile:
-            # 检查该行是否满足条件
-            if not has_consecutive_numbers(line.strip().split(',')):
-                # 如果满足条件，则将该行写入到新建的文本文件中
-                outfile.write(line)
-    with open('combos_without_consecutive_numbers.txt', 'r') as file:
-        # 使用readlines()函数读取文件内容并存储到一个列表中
-        lines = file.readlines()
-        num_lines = len(lines)
-        debug_print(f'共输出{num_lines}个组合')    
-
-
-def check_interval(line, intervals, exception_numbers):
-    """筛选设定区间及个数的组合，并排除不要的数字
-
-    Args:
-        line (字符串): 一组组合数据
-        intervals: 区间及个数的字典
-        exception_numbers: 不要的数字列表
-    """
-
-    for interval, count in intervals.items():
-        c = 0
-        i = 0
-        for i in range(len(line)):
-            if (int(line[i]) >= interval[0] and int(line[i]) <= interval[1]):
-                c += 1
-            for number in exception_numbers:
-                if number == int(line[i]):
-                    return False
-        if c != count:
-            return False
-    return True
-
-def get_condition_data(intervals, exception_numbers):
-    # 打开原始文本文件和新建的文本文件
-    with open('combos_without_consecutive_numbers.txt', 'r') as infile, open('output.txt', 'w') as outfile:
-        # 循环读取每一行
-        for line in infile:
-            # 检查该行是否满足条件
-            if check_interval(line.strip().split(','), intervals, exception_numbers):
-                # 如果满足条件，则将该行写入到新建的文本文件中
-                outfile.write(line)
-    with open('output.txt', 'r') as file:
-        # 使用readlines()函数读取文件内容并存储到一个列表中
-        lines = file.readlines()
-        num_lines = len(lines)
-        debug_print(f'共输出{num_lines}个组合')
