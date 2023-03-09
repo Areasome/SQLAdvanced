@@ -4,26 +4,26 @@ import os
 print('####')
 
 def main():
-    # is_update = input('是否更新到最新一期双色球数据?\n(y/n): ')
-    # if is_update == 'y':
-    #     mf.requests_data()
+    is_update = input('是否更新到最新一期双色球数据?\n(y/n): ')
+    if is_update == 'y':
+        mf.requests_data()
 
-    # select_row = input('是否需要更改分析期数(默认: 最新30期)\n(y/n): ')
-    # if select_row != 'y':
-    #     data = mf.print_lottery_data()
-    # else:
-    #     row = int(input('请输入需要分析的期数: '))
-    #     data = mf.print_lottery_data(row=row)
+    select_row = input('是否需要更改分析期数(默认: 最新30期)\n(y/n): ')
+    if select_row != 'y':
+        data = mf.print_lottery_data()
+    else:
+        row = int(input('请输入需要分析的期数: '))
+        data = mf.print_lottery_data(row=row)
 
-    # is_make_combos = input('是否需要生成所有组合?\n(y/n): ')
-    # if is_make_combos == 'y':
-    #     mf.make_all_combos()
+    is_make_combos = input('是否需要生成所有组合?\n(y/n): ')
+    if is_make_combos == 'y':
+        mf.make_all_combos()
 
-    # mf.debug_print('处理所有组合的数据...\n')
-    # is_check_consecutive_combos = input('是否去除包含3个或3个以上连号的组合?\n(y/n): ')
-    # if is_check_consecutive_combos == 'y':
+    mf.debug_print('处理所有组合的数据...\n')
+    is_check_consecutive_combos = input('是否去除包含3个或3个以上连号的组合?\n(y/n): ')
+    if is_check_consecutive_combos == 'y':
 
-    #     mf.exception_consecutive_numbers()
+        mf.exception_consecutive_numbers()
 
     
     mf.debug_print('处理不包含3个及3个以上连号的数据...\n')
