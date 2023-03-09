@@ -146,3 +146,74 @@ def debug_print(message):
     timestamp_str = current_time.strftime('[%Y-%m-%d %H:%M:%S]')
     # 打印带时间戳的调试信息
     print(f'{timestamp_str} {message}')
+
+
+
+def has_consecutive_numbers(line):
+    """检查有没有3个或3个以上连续自然数
+
+    Args:
+        line (字符串): 一组组合数据
+    """
+    count = 1
+    for i in range(len(line)-1):
+        if int(line[i+1]) == int(line[i])+1:
+            count += 1
+            if count >= 3:
+                return True
+        else:
+            count = 1
+    return False
+
+def exception_consecutive_numbers():
+    # 打开原始文本文件和新建的文本文件
+    with open('all_combos.txt', 'r') as infile, open('combos_without_consecutive_numbers.txt', 'w') as outfile:
+        # 循环读取每一行
+        for line in infile:
+            # 检查该行是否满足条件
+            if not has_consecutive_numbers(line.strip().split(',')):
+                # 如果满足条件，则将该行写入到新建的文本文件中
+                outfile.write(line)
+    with open('combos_without_consecutive_numbers.txt', 'r') as file:
+        # 使用readlines()函数读取文件内容并存储到一个列表中
+        lines = file.readlines()
+        num_lines = len(lines)
+        debug_print(f'共输出{num_lines}个组合')    
+
+
+def check_interval(line, intervals, exception_numbers):
+    """筛选设定区间及个数的组合，并排除不要的数字
+
+    Args:
+        line (字符串): 一组组合数据
+        intervals: 区间及个数的字典
+        exception_numbers: 不要的数字列表
+    """
+
+    for interval, count in intervals.items():
+        c = 0
+        i = 0
+        for i in range(len(line)):
+            if (int(line[i]) >= interval[0] and int(line[i]) <= interval[1]):
+                c += 1
+            for number in exception_numbers:
+                if number == int(line[i]):
+                    return False
+        if c != count:
+            return False
+    return True
+
+def get_condition_data(intervals, exception_numbers):
+    # 打开原始文本文件和新建的文本文件
+    with open('combos_without_consecutive_numbers.txt', 'r') as infile, open('output.txt', 'w') as outfile:
+        # 循环读取每一行
+        for line in infile:
+            # 检查该行是否满足条件
+            if check_interval(line.strip().split(','), intervals, exception_numbers):
+                # 如果满足条件，则将该行写入到新建的文本文件中
+                outfile.write(line)
+    with open('output.txt', 'r') as file:
+        # 使用readlines()函数读取文件内容并存储到一个列表中
+        lines = file.readlines()
+        num_lines = len(lines)
+        debug_print(f'共输出{num_lines}个组合')

@@ -25,6 +25,23 @@ def main():
         row = int(input('请输入需要打印的期数: '))
         mf.chunk_data(row_size=row)
 
+    mf.debug_print('处理不包含3个及3个以上连号的数据...\n')
+    set_condition = input('请设定区间和每个区间应包含的数的数量\n比如: 1-11:2,12-22:2,23-33:2\n')
+    intervals = {}
+    for i in set_condition.split(','):
+        count = int(i.strip().split(':')[1])
+        temp = i.strip().split(':')[0]
+        start = int(temp.strip().split('-')[0])
+        end = int(temp.strip().split('-')[1])
+        interval = (start,end)
+        intervals[interval]= count      # 设定区间和每个区间应包含的数的数量
+
+    set_exception_numbers = input('请输入想要排除的号码，用逗号隔开:\n')
+    exception_numbers = []
+    for i in set_exception_numbers.split(','):
+        exception_numbers.append(int(i.strip()))     # 排除的号码
+
+    mf.get_condition_data(intervals, exception_numbers)
 
 if __name__ == '__main__':
     main()
