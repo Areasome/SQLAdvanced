@@ -29,6 +29,13 @@ def main():
         row = int(input('请输入需要打印的期数: '))
         mf.chunk_data(row_size=row)
 
+    # 清理3个及3个以上连号
+    mf.debug_print('处理所有组合的数据...\n')
+    is_check_consecutive_combos = input('是否去除包含3个或3个以上连号的组合?\n(y/n): ')
+    if is_check_consecutive_combos == 'y':
+
+        mf.exception_consecutive_numbers()
+
     # 清理垃圾号码
     mf.debug_print('正在处理不包含3个及3个以上连号的数据...\n')
     set_condition = input('请设定区间和每个区间应包含的数的数量\n比如: 1-11:2,12-22:2,23-33:2\n')

@@ -112,7 +112,7 @@ def chunk_data(row_size=10):
     data_lottery = []
     with open('ssq_asc.txt', 'r') as f:
         for line in f:
-            fields = line.strip().split()[2:9]
+            fields = line.strip().split()[2:8]
             data_lottery.append(fields)
 
     data_rows = []
