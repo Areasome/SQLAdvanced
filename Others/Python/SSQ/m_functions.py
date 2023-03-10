@@ -8,6 +8,20 @@ from tqdm import tqdm
 import requests
 
 
+def debug_print(message):
+    """打印带时间戳的调试信息到控制台
+
+    Args:
+        message (字符串): 调试信息
+    """
+    # 获取当前时间
+    current_time = datetime.datetime.now()
+    # 格式化时间戳字符串
+    timestamp_str = current_time.strftime('[%Y-%m-%d %H:%M:%S]')
+    # 打印带时间戳的调试信息
+    print(f'{timestamp_str} {message}')
+
+
 def print_lottery_data(row=30, column=9):
     """打印往期开奖数据
 
@@ -96,7 +110,7 @@ def chunk_data(row_size=10):
 
     # 读取数据(开奖信息) 格式为二维List red1,red2,red3,red4,red5,red6,blue
     data_lottery = []
-    with open('Others\Python\SSQ\ssq_asc.txt', 'r') as f:
+    with open('ssq_asc.txt', 'r') as f:
         for line in f:
             fields = line.strip().split()[2:9]
             data_lottery.append(fields)
@@ -134,21 +148,6 @@ def chunk_data(row_size=10):
     debug_print('按期统计数据数据完成!\n')
 
 
-def debug_print(message):
-    """打印带时间戳的调试信息到控制台
-
-    Args:
-        message (字符串): 调试信息
-    """
-    # 获取当前时间
-    current_time = datetime.datetime.now()
-    # 格式化时间戳字符串
-    timestamp_str = current_time.strftime('[%Y-%m-%d %H:%M:%S]')
-    # 打印带时间戳的调试信息
-    print(f'{timestamp_str} {message}')
-
-
-
 def has_consecutive_numbers(line):
     """检查有没有3个或3个以上连续自然数
 
@@ -156,8 +155,8 @@ def has_consecutive_numbers(line):
         line (字符串): 一组组合数据
     """
     count = 1
-    for i in range(len(line)-1):
-        if int(line[i+1]) == int(line[i])+1:
+    for i in range(len(line) - 1):
+        if int(line[i + 1]) == int(line[i]) + 1:
             count += 1
             if count >= 3:
                 return True
@@ -165,9 +164,11 @@ def has_consecutive_numbers(line):
             count = 1
     return False
 
+
 def exception_consecutive_numbers():
     # 打开原始文本文件和新建的文本文件
-    with open('all_combos.txt', 'r') as infile, open('combos_without_consecutive_numbers.txt', 'w') as outfile:
+    with open('all_combos.txt', 'r') as infile, open('combos_without_consecutive_numbers.txt',
+                                                     'w') as outfile:
         # 循环读取每一行
         for line in infile:
             # 检查该行是否满足条件
@@ -178,7 +179,7 @@ def exception_consecutive_numbers():
         # 使用readlines()函数读取文件内容并存储到一个列表中
         lines = file.readlines()
         num_lines = len(lines)
-        debug_print(f'共输出{num_lines}个组合')    
+        debug_print(f'共输出{num_lines}个组合')
 
 
 def check_interval(line, intervals, exception_numbers):
@@ -203,9 +204,11 @@ def check_interval(line, intervals, exception_numbers):
             return False
     return True
 
+
 def get_condition_data(intervals, exception_numbers):
     # 打开原始文本文件和新建的文本文件
-    with open('combos_without_consecutive_numbers.txt', 'r') as infile, open('output.txt', 'w') as outfile:
+    with open('combos_without_consecutive_numbers.txt', 'r') as infile, open('output.txt',
+                                                                             'w') as outfile:
         # 循环读取每一行
         for line in infile:
             # 检查该行是否满足条件
