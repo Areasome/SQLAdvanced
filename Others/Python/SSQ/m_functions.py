@@ -6,6 +6,7 @@ import itertools
 import datetime
 from tqdm import tqdm
 import requests
+from collections import defaultdict
 
 
 def debug_print(message):
@@ -131,14 +132,15 @@ def chunk_data(row_size=10):
         sorted_keys = sorted(map(int, rows_counter.keys()))
 
         # 创建一个新的Counter对象，并为缺失的键添加键值对
+        new_counter = defaultdict(int)
         new_counter = Counter({f'{k:02d}': 0 for k in range(1, 34)})
         new_counter.update(rows_counter)
 
         # 将新的Counter对象中的键按照排好序的键列表进行排序
-        sorted_output = Counter({f'{k:02d}': new_counter[f'{k:02d}'] for k in sorted_keys})
+        # sorted_output = Counter({f'{k:02d}': new_counter[f'{k:02d}'] for k in sorted_keys})
 
         # 将结果字典保存到result里
-        result.append(dict(sorted_output))
+        result.append(dict(new_counter))
 
     # 转换字典为列表
     rows = [[r[k] for k in sorted(r.keys())] for r in result]
