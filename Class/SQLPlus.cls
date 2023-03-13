@@ -107,7 +107,6 @@ Public Property Let DataSource(ByVal strNewValue As String)
     
 DataSource_Error:
     Debug.Print "Error " & Err.Number & " (" & Err.Description & ") in procedure DataSource, line " & Erl & "."
-    Call CloseConnection
     
 End Property
 
@@ -234,7 +233,6 @@ Public Sub Connection()
 
 Connection_Error:
     Debug.Print "Error " & Err.Number & " (" & Err.Description & ") in procedure Connection, line " & Erl & "."
-    Call CloseConnection
     
 End Sub
 
@@ -243,13 +241,13 @@ Public Sub Query()
     On Error GoTo Query_Error
     If tADO.ExecuteString = "" Then Exit Sub
     Set tADO.Recordset = tADO.Connection.Execute(tADO.ExecuteString)
+    tADO.ExecuteResult = tADO.Recordset.GetRows
     
     On Error GoTo 0
     Exit Sub
 
 Query_Error:
     Debug.Print "Error " & Err.Number & " (" & Err.Description & ") in procedure Query, line " & Erl & "."
-    Call CloseConnection
     
 End Sub
 
@@ -257,6 +255,7 @@ Public Sub ExecuteToArray(ByRef Data As Variant, Optional Header As Boolean = Fa
 
     On Error GoTo ExecuteToArray_Error
     If tADO.ExecuteString = "" Then Exit Sub
+    Set tADO.Recordset = tADO.Connection.Execute(tADO.ExecuteString)
     
     Dim arrData As Variant
     Dim arrHeader As Variant
@@ -287,7 +286,6 @@ Public Sub ExecuteToArray(ByRef Data As Variant, Optional Header As Boolean = Fa
 
 ExecuteToArray_Error:
     Debug.Print "Error " & Err.Number & " (" & Err.Description & ") in procedure ExecuteToArray, line " & Erl & "."
-    Call CloseConnection
     
 End Sub
 
@@ -296,7 +294,7 @@ Public Sub ExecuteToRange(ByVal Rng As Range, Optional Header As Boolean = False
     On Error GoTo ExecuteToRange_Error
     '// Error for sql query string is empty
     If tADO.ExecuteString = "" Then Exit Sub
-    'Set tADO.Recordset = tADO.Connection.Execute(tADO.ExecuteString)
+    Set tADO.Recordset = tADO.Connection.Execute(tADO.ExecuteString)
     
     '// Write data with header
     If Header Then
@@ -315,7 +313,6 @@ Public Sub ExecuteToRange(ByVal Rng As Range, Optional Header As Boolean = False
 
 ExecuteToRange_Error:
     Debug.Print "Error " & Err.Number & " (" & Err.Description & ") in procedure ExecuteToRange, line " & Erl & "."
-    Call CloseConnection
     
 End Sub
 
@@ -368,7 +365,6 @@ Public Sub CreateSchema(Optional strNewKey As String = Empty, Optional strNewVal
 
 CreateSchema_Error:
     Debug.Print "Error " & Err.Number & " (" & Err.Description & ") in procedure CreateSchema, line " & Erl & "."
-    Call CloseConnection
     
 End Sub
 
