@@ -222,3 +222,24 @@ def get_condition_data(intervals, exception_numbers):
         lines = file.readlines()
         num_lines = len(lines)
         debug_print(f'共输出{num_lines}个组合')
+
+
+
+def check_consecutive_count(counter = 1):
+    # 打开原始文件和新文件
+    with open('output.txt', 'r') as input_file, open('test.txt', 'w') as output_file:
+        # 逐行读取原始文件内容
+        for line in input_file:
+            # 去除每行两端的空格和换行符
+            line = line.strip()
+            # 将每行数据按逗号分割成列表
+            nums = line.split(',')
+            # 统计连续数字的个数
+            consecutive_count = 0
+            for i in range(len(nums) - 1):
+                if int(nums[i]) + 1 == int(nums[i + 1]):
+                    consecutive_count += 1
+            # 判断是否满足要求
+            if consecutive_count <= counter:
+                # 如果满足要求，则将该行数据写入新文件中
+                output_file.write(line + '\n')

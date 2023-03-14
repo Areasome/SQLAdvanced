@@ -56,6 +56,13 @@ def main():
 
     mf.get_condition_data(intervals, exception_numbers)
 
+    # 是否清理2组以上的连号
+    mf.debug_print('正在处理已经设定好区间及个数的数据...\n')
+    is_check_consecutive_count = input('是否清理掉包含2组以上的连号组合?\n(y/n): ')
+    if is_check_consecutive_count == 'y':
+        mf.check_consecutive_count()
+    else:
+        mf.check_consecutive_count(2)
 
 if __name__ == '__main__':
     main()
